@@ -1,8 +1,10 @@
-# CP1 Teknik Terimler Sözlüğü
+# Teknik Terimler Sözlüğü
 
-Bu doküman, `Developing_Steps.md` rehberinde (Check Point 1) geçen teknik terimlerin en basit ve anlaşılır açıklamalarını içerir.
+Bu doküman, `Developing_Steps.md` rehberinde (CP1 ve CP2) geçen teknik terimlerin en basit ve anlaşılır açıklamalarını içerir.
 
 ---
+
+## 📘 Check Point 1 (CP1) Teknik Terimleri
 
 ### 1. Jetpack Compose (Compose)
 > Android'de ekran arayüzünü (UI) XML dosyaları yazmadan, doğrudan **Kotlin kodları** ile hızlı ve esnek şekilde oluşturmamızı sağlayan modern arayüz kütüphanesidir.
@@ -35,7 +37,29 @@ Bu doküman, `Developing_Steps.md` rehberinde (Check Point 1) geçen teknik teri
 > Kodlarınızda yaptığınız tüm değişiklikleri adım adım kaydeden, geriye dönük sürümleri saklayan ve projeyi güvenle yönetmenizi sağlayan versiyon kontrol sistemidir.
 
 ### 11. Branch (Dal)
-> Ana projenin koduna zarar vermeden yeni bir özellik geliştirmek veya denemeler yapmak üzere açılan bağımsız çalışma alanıdır (örneğin: `cp1_başlangıç`).
+> Ana projenin koduna zarar vermeden yeni bir özellik geliştirmek veya denemeler yapmak üzere açılan bağımsız çalışma alanıdır (örneğin: `cp2_baslangic`).
 
 ### 12. Commit
 > Yapılan değişikliklerin o anki halini bir açıklama mesajı ile birlikte Git kaydı olarak dondurma/kaydetme işlemidir (kayıt noktası).
+
+---
+
+## 📗 Check Point 2 (CP2) Teknik Terimleri
+
+### 13. NavHost (Jetpack Navigation)
+> Ekranlar arası geçişleri (yönlendirmeleri) yöneten, uygulamanın haritasını tutan ve o an hangi ekranın gösterileceğini belirleyen ana navigasyon bileşenidir.
+
+### 14. Hedef (Destination / Route)
+> Uygulama içinde yönlendirilebilecek her bir ekranın/sayfanın navigasyon haritasındaki benzersiz adresi veya kimliğidir.
+
+### 15. Parametre Aktarımı (Arguments / Route Parameters)
+> Bir ekrandan diğer bir ekrana geçerken (örneğin şehir listesinden şehir detay ekranına geçerken `cityId` gibi) veri taşınması işlemidir.
+
+### 16. Callback (Geri Çağırma Fonksiyonu)
+> Alt bileşenlerin (örneğin bir butonun) tıklama gibi olayları üst bileşene/ekrana bildirmesini sağlayan fonksiyon parametreleridir (örneğin `onCityClick: (String) -> Unit`).
+
+### 17. Backstack (Geri Dönüş Yığını) & Sistem Geri İşlemi
+> Kullanıcının ziyaret ettiği ekranların sırayla arka planda hafızada tutulması ve cihazın geri butonuna basıldığında bir önceki ekrana güvenle dönülmesini sağlayan yapıdır.
+
+### 18. Geçersiz Parametre Durumu (Invalid / Null Parameter Handling)
+> Bir ekrana eksik, hatalı veya bulunamayan bir veri aktarıldığında uygulamanın çökmesini önleyen güvenlik ve hata yönetimi mekanizmasıdır.

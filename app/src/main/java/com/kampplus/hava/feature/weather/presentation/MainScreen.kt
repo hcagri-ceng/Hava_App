@@ -12,20 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kampplus.hava.core.ui.component.ContentCard
+import com.kampplus.hava.core.ui.component.CityCard
 import com.kampplus.hava.core.ui.theme.HavaTheme
 
 /**
- * CP1 İstenenleri 2: MainScreen ekran bileşeni.
- * Arayüz başlığı, açıklaması ve tekrar kullanılabilir ContentCard bileşenini içerir.
+ * CP2 İstenenleri 1 & 3: Ana Şehir Listesi Ekranı.
+ * Navigasyon kararını ekran katmanına bırakır, alt CityCard bileşenleri tıklamayı callback ile iletir.
  */
 @Composable
 fun MainScreen(
-    appTitle: String,
-    appDescription: String,
-    cardTitle: String,
-    cardDescription: String,
-    modifier: Modifier = Modifier
+    onCityClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    appTitle: String = "Hava Durumu Uygulaması",
+    appDescription: String = "Şehir seçerek detaylı tahminleri inceleyebilirsiniz:"
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize()
@@ -49,43 +48,37 @@ fun MainScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Tekrar kullanılabilir İçerik Bileşeni (ContentCard)
-            ContentCard(
-                title = cardTitle,
-                description = cardDescription
+            // CP2 İstenenleri 3: Tıklama aksiyonunu callback (onCityClick) ile bildiren liste ögeleri
+            CityCard(
+                cityName = "İstanbul",
+                temperature = "22°C",
+                weatherCondition = "Güneşli",
+                onClick = { onCityClick("istanbul") }
+            )
+
+            CityCard(
+                cityName = "Ankara",
+                temperature = "18°C",
+                weatherCondition = "Parçalı Bulutlu",
+                onClick = { onCityClick("ankara") }
+            )
+
+            CityCard(
+                cityName = "İzmir",
+                temperature = "25°C",
+                weatherCondition = "Açık",
+                onClick = { onCityClick("izmir") }
             )
         }
     }
 }
 
-/**
- * CP1 İstenenleri 3: Görünümü doğrulama - Kısa Metin Önizlemesi (@Preview)
- */
-@Preview(name = "Kısa Metin Önizlemesi", showBackground = true)
+@Preview(name = "Ana Ekran Önizlemesi", showBackground = true)
 @Composable
-fun MainScreenShortTextPreview() {
+fun MainScreenPreview() {
     HavaTheme {
         MainScreen(
-            appTitle = "Hava Durumu Uygulaması",
-            appDescription = "KAMP+ CP1 Ekranı",
-            cardTitle = "İstanbul",
-            cardDescription = "Güneşli 22°C"
-        )
-    }
-}
-
-/**
- * CP1 İstenenleri 3: Görünümü doğrulama - Uzun Metin Önizlemesi (@Preview)
- */
-@Preview(name = "Uzun Metin Önizlemesi", showBackground = true)
-@Composable
-fun MainScreenLongTextPreview() {
-    HavaTheme {
-        MainScreen(
-            appTitle = "Hava Durumu & Tahmin Portalı",
-            appDescription = "Bu ekran Jetpack Compose ve Material3 kullanılarak CP1 kapsamında geliştirilmiştir.",
-            cardTitle = "Ankara - Detaylı Hava Tahmini",
-            cardDescription = "Bugün havanın parçalı bulutlu ve yer yer sağanak yağışlı olması beklenmektedir. Rüzgar hızı güneybatı yönünden saatte 18 km hızla esecektir."
+            onCityClick = {}
         )
     }
 }
