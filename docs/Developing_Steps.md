@@ -45,3 +45,26 @@
     2.Geçişleri yapılandırın. Navhost ile hedefleri tanımlayın. Geçiş için gereken kimlik veya küçük bir parametreyi ikinci ekrana aktarın. 
     3.Bileşenleri ayırın. Navigasyon kararını ekran katmanında tutun. Alt bileşenleri kullanıcı aksiyonlarını callback ile bildirsin.
     4. Geri dönüşü doğrulayın. Sistem Geri işlemini ve geçersiz parametre durumunu sınayın. Her durumda anlaşılır bir geri dönüş yolu sağlayın. 
+
+<h1>Geliştirme Adımları CP2</h1>
+
+### CP2 Geliştirme Adımları & Yapılan İşlemler
+
+#### 1. Jetpack Navigation Bağımlılığının Eklenmesi
+* `libs.versions.toml` ve `app/build.gradle.kts` dosyalarına `androidx.navigation:navigation-compose` kütüphanesi eklendi.
+
+#### 2. Navigasyon Hedeflerinin Oluşturulması (`core/navigation`)
+* **`Destinations.kt`**: `Home` (`"home"`) ve `Detail` (`"detail/{cityId}"`) rotaları güvenli şekilde tanımlandı.
+* **`HavaNavHost.kt`**: `NavHost` bileşeni kurularak ana ekran ile şehir detay ekranı birbirine bağlandı. `cityId` parametresi ikinci ekrana aktarıldı.
+
+#### 3. Tıklanabilir Şehir Kartı Bileşeni (`core/ui/component`)
+* **`CityCard.kt`**: Şehir adı, hava durumu ve sıcaklık bilgilerini gösteren kart oluşturuldu. Tıklama aksiyonu `onClick: () -> Unit` callback fonksiyonu ile üst katmana iletildi.
+
+#### 4. Ekranların Ayrılması (`feature/weather/presentation`)
+* **`MainScreen.kt`**: Şehir listesi ekranı güncellendi. Navigasyon kararları ekranın dışına alınarak `onCityClick: (String) -> Unit` callback yapısı bağlandı.
+* **`DetailScreen.kt`**: Şehir detay ekranı oluşturuldu. Sol üst alana geri tuşu (`IconButton`) ve TopBar eklendi.
+* **Geçersiz Parametre Yönetimi**: `cityId` parametresinin `null`, boş veya hatalı geldiği durumlar sınandı; bu durumlarda özel hata kartı ve "Ana Ekrana Dön" butonu gösterildi.
+
+#### 5. Uygulama Girişi ve Geri Dönüş Yapısı (`MainActivity.kt`)
+* `MainActivity` içerisine `rememberNavController()` bağlandı ve `HavaNavHost` üzerinden sistem geri tuşu (`popBackStack`) entegre edildi.
+

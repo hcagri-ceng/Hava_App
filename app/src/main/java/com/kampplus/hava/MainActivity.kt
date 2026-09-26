@@ -4,12 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
+import com.kampplus.hava.core.navigation.HavaNavHost
 import com.kampplus.hava.core.ui.theme.HavaTheme
-import com.kampplus.hava.feature.weather.presentation.MainScreen
 
 /**
- * CP1 İstenenleri 1: Uygulamanın girişi.
- * MainActivity, setContent ve HavaTheme ilişkisi kurulmuştur.
+ * CP2: Navigasyon destekli ana giriş.
+ * rememberNavController() ile NavHost entegrasyonu sağlanmıştır.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,12 +18,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HavaTheme {
-                MainScreen(
-                    appTitle = "Hava Durumu Uygulaması",
-                    appDescription = "Jetpack Compose ile CP1 Ekranı",
-                    cardTitle = "Günlük Özet",
-                    cardDescription = "Arayüz bileşenleri parametreler ile başarıyla oluşturuldu."
-                )
+                val navController = rememberNavController()
+                HavaNavHost(navController = navController)
             }
         }
     }
