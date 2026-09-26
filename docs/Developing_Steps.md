@@ -10,4 +10,27 @@
     4. Değişiklikleri kaydedin. Uygulamayı cihazda veya emülatörde çalıştırın. Eğitimde belirlenen Git akışına uygun dal ve commit oluşturun.
 
 <h1>Beraber yapalım.</h1>
-    
+
+### CP1 Geliştirme Adımları & Yapılan İşlemler (Sade Anlatım)
+
+#### 1. Proje ve Gradle Kurulumu
+* `build.gradle.kts`, `settings.gradle.kts` ve `gradle/libs.versions.toml` dosyaları oluşturularak **Jetpack Compose** ve **Material3** kütüphaneleri projeye kuruldu.
+* Android Studio'nun projeyi tanıması için `gradle-wrapper` araçları yapılandırıldı.
+
+#### 2. Tema Yapısının Kurulması (`core/ui/theme`)
+* **`Color.kt`**: Uygulamanın ana renk paleti tanımlandı.
+* **`Type.kt`**: Yazı boyutu ve tipleri (typography) belirlendi.
+* **`Theme.kt`**: Uygulamanın genel görünümünü yöneten `HavaTheme` bileşeni oluşturuldu.
+
+#### 3. Tekrar Kullanılabilir Kart Bileşeni (`core/ui/component`)
+* **`ContentCard.kt`**: Dışarıdan `title` (başlık) ve `description` (açıklama) parametrelerini alan tekrar kullanılabilir bir kart bileşeni yazıldı. `Modifier` kullanılarak iç/dış boşluklar (padding) ve kart boyutları ayarlandı.
+
+#### 4. Ana Ekran ve Önizlemeler (`feature/weather/presentation`)
+* **`MainScreen.kt`**: Ana ekran tasarımı kodlandı. İçi boş bırakılmayıp metinler parametre olarak iletildi ve `ContentCard` bileşeni ekranın içinde çağrıldı.
+* **`@Preview` Tanımları**: Tasarımı emülatörsüz doğrulayabilmek için iki farklı metin uzunluğunda önizleme eklendi (`MainScreenShortTextPreview` ve `MainScreenLongTextPreview`).
+
+#### 5. Uygulama Girişi (`MainActivity.kt`)
+* `MainActivity` içinde `setContent { HavaTheme { MainScreen(...) } }` yapısı kurularak Compose ekranı Android uygulamasına bağlandı.
+
+#### 6. Git & GitHub Akışı
+* `.gitignore` eklendi, başlangıç için `cp1_baslangic` ve tamamlanmış hali için `cp1_bitis` branch'leri açıldı. Tüm kodlar GitHub'a push'landı.
