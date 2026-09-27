@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.kampplus.hava.feature.favorites.presentation.FavoritesScreen
 import com.kampplus.hava.feature.weather.presentation.DetailScreen
 import com.kampplus.hava.feature.weather.presentation.MainScreen
 import com.kampplus.hava.feature.weather.presentation.WeatherViewModel
@@ -42,11 +43,31 @@ fun HavaNavHost(
                 },
                 onFavoriteToggle = { cityId ->
                     weatherViewModel.toggleFavorite(cityId)
+                },
+                onNavigateToFavorites = {
+                    navController.navigate(Destination.Favorites.route)
                 }
             )
         }
 
-        // 2. Şehir Detay Ekranı Hedefi (Ortak ViewModel'den Şehir Verisini Alma)
+        // 2. Favori Şehirler Ekranı Hedefi (İkinci Ekran)
+        composable(route = Destination.Favorites.route) {
+            FavoritesScreen(
+                favoriteCities = uiState.favoriteCities,
+                onCityClick = { cityId ->
+                    weatherViewModel.selectCity(cityId)
+                    navController.navigate(Destination.Detail.createRoute(cityId))
+                },
+                onFavoriteToggle = { cityId ->
+                    weatherViewModel.toggleFavorite(cityId)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // 3. Şehir Detay Ekranı Hedefi (Ortak ViewModel'den Şehir Verisini Alma)
         composable(
             route = Destination.Detail.route,
             arguments = listOf(
