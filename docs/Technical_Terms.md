@@ -63,3 +63,26 @@ Bu doküman, `Developing_Steps.md` rehberinde (CP1 ve CP2) geçen teknik terimle
 
 ### 18. Geçersiz Parametre Durumu (Invalid / Null Parameter Handling)
 > Bir ekrana eksik, hatalı veya bulunamayan bir veri aktarıldığında uygulamanın çökmesini önleyen güvenlik ve hata yönetimi mekanizmasıdır.
+
+---
+
+## 📙 Check Point 3 (CP3) Teknik Terimleri
+
+### 19. ViewModel
+> Ekranın durumunu (state) tutan, cihaz döndürüldüğünde dahi verilerin kaybolmamasını sağlayan ve iş mantığını (business logic) yöneten Android mimari bileşenidir.
+
+### 20. UiState (Arayüz Durum Modeli)
+> Ekranın o anki tüm görsel durumunu (örneğin seçili şehir, favoriler listesi, yüklenme durumu) tek bir veri sınıfı (data class) içinde temsil eden durum kaynağıdır (Single Source of Truth).
+
+### 21. StateFlow
+> Jetpack Compose arayüzünün verilerdeki anlık değişiklikleri canlı olarak dinlemesini ve ekranın otomatik güncellenmesini (recomposition) sağlayan reaktif veri akışıdır.
+
+### 22. collectAsStateWithLifecycle()
+> StateFlow içindeki veri akışını Android uygulamasının yaşam döngüsüne (Lifecycle) duyarlı olarak dinleyen, uygulama arka plana gittiğinde kaynak tüketimini durduran Compose fonksiyonudur.
+
+### 23. Ortak ViewModel Sahipliği (Shared ViewModel Ownership)
+> Birden fazla ekranın (örneğin Liste ekranı ve Detay ekranı) aynı ViewModel örneğini paylaşarak ortak verileri ve favorileri senkronize şekilde kullanabilmesidir.
+
+### 24. Türetilmiş Durum (Derived State)
+> Mevcut ana durumdan (UiState) hesaplanarak elde edilen ikincil verilerdir (örneğin tüm şehirler arasından sadece favori işaretlenmiş olanların hesaplanması).
+

@@ -1,7 +1,10 @@
 package com.kampplus.hava.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -9,16 +12,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kampplus.hava.feature.weather.presentation.DetailScreen
 import com.kampplus.hava.feature.weather.presentation.MainScreen
+import com.kampplus.hava.feature.weather.presentation.WeatherViewModel
 
 /**
- * CP2 İstenenleri 2: NavHost yapılandırması.
- * Ekran hedeflerini tanımlar ve şehir parametresini ikinci ekrana aktarır.
+ * CP3 İstenenleri 2 & 3: Ortak ViewModel sahipliği ve StateFlow canlı takibi.
+ * NavHost seviyesinde ortak ViewModel oluşturulur ve collectAsStateWithLifecycle() ile dinlenir.
  */
 @Composable
 fun HavaNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    weatherViewModel: WeatherViewModel = viewModel()
 ) {
+    // CP3 İstenenleri 3: Durumu collectAsStateWithLifecycle() ile dinleme
+    val uiState by weatherViewModel.uiState.collectAsStateWithLifecycle()
+
     NavHost(
         navController = navController,
         startDestination = Destination.Home.route,
@@ -27,13 +35,18 @@ fun HavaNavHost(
         // 1. Ana Ekran Hedefi
         composable(route = Destination.Home.route) {
             MainScreen(
+                uiState = uiState,
                 onCityClick = { cityId ->
+                    weatherViewModel.selectCity(cityId)
                     navController.navigate(Destination.Detail.createRoute(cityId))
+                },
+                onFavoriteToggle = { cityId ->
+                    weatherViewModel.toggleFavorite(cityId)
                 }
             )
         }
 
-        // 2. Şehir Detay Ekranı Hedefi (Parametre Alarak)
+        // 2. Şehir Detay Ekranı Hedefi (Ortak ViewModel'den Şehir Verisini Alma)
         composable(
             route = Destination.Detail.route,
             arguments = listOf(
@@ -44,8 +57,13 @@ fun HavaNavHost(
             )
         ) { backStackEntry ->
             val cityId = backStackEntry.arguments?.getString("cityId")
+            val selectedCity = uiState.cities.find { it.id == cityId }
+
             DetailScreen(
-                cityId = cityId,
+                city = selectedCity,
+                onFavoriteToggle = {
+                    cityId?.let { weatherViewModel.toggleFavorite(it) }
+                },
                 onBackClick = {
                     navController.popBackStack()
                 }

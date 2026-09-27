@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -14,17 +16,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kampplus.hava.core.ui.component.CityCard
 import com.kampplus.hava.core.ui.theme.HavaTheme
+import com.kampplus.hava.feature.weather.presentation.model.CityUiModel
+import com.kampplus.hava.feature.weather.presentation.model.WeatherUiState
 
 /**
- * CP2 İstenenleri 1 & 3: Ana Şehir Listesi Ekranı.
- * Navigasyon kararını ekran katmanına bırakır, alt CityCard bileşenleri tıklamayı callback ile iletir.
+ * CP3 İstenenleri 3: UiState'i gözlemleyen ve aksiyonları (onCityClick, onFavoriteToggle)
+ * ViewModel'e ileten Ana Şehir Listesi Ekranı.
  */
 @Composable
 fun MainScreen(
+    uiState: WeatherUiState,
     onCityClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    appTitle: String = "Hava Durumu Uygulaması",
-    appDescription: String = "Şehir seçerek detaylı tahminleri inceleyebilirsiniz:"
+    onFavoriteToggle: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize()
@@ -36,39 +40,40 @@ fun MainScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = appTitle,
+                text = "Hava Durumu & Şehirler",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = appDescription,
+                text = "Favori şehirlerinizi seçebilir, detay için tıklayabilirsiniz:",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // CP2 İstenenleri 3: Tıklama aksiyonunu callback (onCityClick) ile bildiren liste ögeleri
-            CityCard(
-                cityName = "İstanbul",
-                temperature = "22°C",
-                weatherCondition = "Güneşli",
-                onClick = { onCityClick("istanbul") }
-            )
+            // Favori Şehir Sayısı Özeti (CP3: Türetilmiş Durum)
+            if (uiState.favoriteCities.isNotEmpty()) {
+                Text(
+                    text = "Favori Şehir Sayınız: ${uiState.favoriteCities.size}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
-            CityCard(
-                cityName = "Ankara",
-                temperature = "18°C",
-                weatherCondition = "Parçalı Bulutlu",
-                onClick = { onCityClick("ankara") }
-            )
-
-            CityCard(
-                cityName = "İzmir",
-                temperature = "25°C",
-                weatherCondition = "Açık",
-                onClick = { onCityClick("izmir") }
-            )
+            LazyColumn {
+                items(uiState.cities, key = { it.id }) { city ->
+                    CityCard(
+                        cityName = city.name,
+                        temperature = city.temperature,
+                        weatherCondition = city.condition,
+                        isFavorite = city.isFavorite,
+                        onFavoriteToggle = { onFavoriteToggle(city.id) },
+                        onClick = { onCityClick(city.id) }
+                    )
+                }
+            }
         }
     }
 }
@@ -78,7 +83,14 @@ fun MainScreen(
 fun MainScreenPreview() {
     HavaTheme {
         MainScreen(
-            onCityClick = {}
+            uiState = WeatherUiState(
+                cities = listOf(
+                    CityUiModel("istanbul", "İstanbul", "22°C", "Güneşli", isFavorite = true),
+                    CityUiModel("ankara", "Ankara", "18°C", "Parçalı Bulutlu", isFavorite = false)
+                )
+            ),
+            onCityClick = {},
+            onFavoriteToggle = {}
         )
     }
 }
