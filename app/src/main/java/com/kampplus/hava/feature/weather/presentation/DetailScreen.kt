@@ -1,6 +1,7 @@
 package com.kampplus.hava.feature.weather.presentation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,35 +23,47 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kampplus.hava.core.ui.theme.HavaTheme
+import com.kampplus.hava.feature.weather.presentation.model.CityUiModel
 
 /**
- * CP2 İstenenleri 1 & 4: Şehir Detay Ekranı.
- * Geçerli parametre durumunda şehir detayını, geçersiz/boş parametre durumunda hata mesajı gösterir.
+ * CP3: Şehir Detay Ekranı.
+ * Şehir detayını ve favori durumunu ortak ViewModel'den gelen veri ile gösterir.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    cityId: String?,
+    city: CityUiModel?,
+    onFavoriteToggle: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Geçersiz/Bilinmeyen Şehir Parametresi Kontrolü
-    val isValidCity = !cityId.isNullOrInvalid()
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isValidCity) "$cityId Detayı" else "Hata") },
+                title = { Text(if (city != null) "${city.name} Detayı" else "Hata") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Geri"
                         )
+                    }
+                },
+                actions = {
+                    if (city != null) {
+                        IconButton(onClick = onFavoriteToggle) {
+                            Icon(
+                                imageVector = if (city.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Favori",
+                                tint = if (city.isFavorite) Color.Red else MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -64,8 +79,7 @@ fun DetailScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            if (isValidCity) {
-                // Geçerli Parametre Durumu
+            if (city != null) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -73,31 +87,28 @@ fun DetailScreen(
                     )
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
-                        Text(
-                            text = "Şehir: ${cityId?.replaceFirstChar { it.uppercase() }}",
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Şehir: ${city.name}",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "Sıcaklık: 24°C",
+                            text = "Sıcaklık: ${city.temperature}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
-                            text = "Durum: Az Bulutlu",
+                            text = "Durum: ${city.condition}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
-                            text = "Nem: %45",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = "Rüzgar: 12 km/s",
+                            text = "Favori Durumu: ${if (city.isFavorite) "Favorilerde ❤️" else "Favori Değil"}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }
             } else {
-                // CP2 İstenenleri 4: Geçersiz Parametre Durumu
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -127,27 +138,13 @@ fun DetailScreen(
     }
 }
 
-private fun String?.isNullOrInvalid(): Boolean {
-    return this.isNullOrBlank() || this == "{cityId}"
-}
-
 @Preview(name = "Geçerli Parametre Önizlemesi", showBackground = true)
 @Composable
 fun DetailScreenValidPreview() {
     HavaTheme {
         DetailScreen(
-            cityId = "istanbul",
-            onBackClick = {}
-        )
-    }
-}
-
-@Preview(name = "Geçersiz Parametre Önizlemesi", showBackground = true)
-@Composable
-fun DetailScreenInvalidPreview() {
-    HavaTheme {
-        DetailScreen(
-            cityId = null,
+            city = CityUiModel("istanbul", "İstanbul", "22°C", "Güneşli", isFavorite = true),
+            onFavoriteToggle = {},
             onBackClick = {}
         )
     }

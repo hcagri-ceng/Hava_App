@@ -68,3 +68,35 @@
 #### 5. Uygulama Girişi ve Geri Dönüş Yapısı (`MainActivity.kt`)
 * `MainActivity` içerisine `rememberNavController()` bağlandı ve `HavaNavHost` üzerinden sistem geri tuşu (`popBackStack`) entegre edildi.
 
+## Check Point 3 (CP3) 
+
+<h1> Amaç </h1> 
+    Kullanıcı etkileşimleriyle değişen ekran durumunu ortak ViewModel'de yönetilmesi ve arayüzün tek bir durum kaynağından beslenmesi.
+<h1>İstenenler</h1>
+    1. State modelini tanımlayın. Bir seçim veya görünüm tercihini temsil eden UiState oluşturun. Durumu StateFlow<UiState> üzerinden sunun. 
+    2. Ortak Sahipliği kurun. Navhost üstünde viewModel() ile ortak örnek alın. İlgili ekranların aynı durum kaynağını kullanmasını sağlayın. 
+    3. Aksiyonları işleyin. Aksiyonları ViewModel fonksiyonlarına sahip iletip yeni state üretin. Ekranda collectAsStateWithLifeCycle() ile gözlemleyin.
+    4. Tutarlılığı doğrulayın. Ekran geçişinde ve cihaz döndürüldüğünde seçimin  korunduğunu doğrulayın. Türetilen bilgileri mevcut state 'ten hesaplayın. 
+
+<h1>Geliştirme Adımları CP3</h1>
+
+### CP3 Geliştirme Adımları & Yapılan İşlemler
+
+#### 1. Lifecycle ve ViewModel Bağımlılıklarının Eklenmesi
+* `libs.versions.toml` ve `app/build.gradle.kts` dosyalarına `lifecycle-runtime-compose` ve `lifecycle-viewmodel-compose` kütüphaneleri eklendi.
+
+#### 2. UiState Durum Modelinin Oluşturulması (`feature/weather/presentation/model`)
+* **`WeatherUiState.kt`**: Ekranın anlık durumunu tutan `WeatherUiState` ve `CityUiModel` data sınıfı yazıldı.
+* **Türetilmiş Durum (Derived State)**: Mevcut state üzerinden hesaplanan `favoriteCities` (favori şehirler listesi) adında ikincil durum eklendi.
+
+#### 3. Ortak ViewModel ve StateFlow Yapısı (`feature/weather/presentation`)
+* **`WeatherViewModel.kt`**: Ekran durumunu `StateFlow<WeatherUiState>` üzerinden sunan ViewModel yazıldı.
+* **Aksiyon Fonksiyonları**: Şehir seçimi (`selectCity`) ve favori ekleme/çıkarma (`toggleFavorite`) aksiyonları tanımlandı.
+
+#### 4. Ortak ViewModel Sahipliği ve Canlı Veri Takibi (`core/navigation`)
+* **`HavaNavHost.kt`**: `NavHost` seviyesinde `val weatherViewModel: WeatherViewModel = viewModel()` ile ortak ViewModel sahipliği kuruldu.
+* **`collectAsStateWithLifecycle()`**: StateFlow veri akışı Compose yaşam döngüsüne duyarlı şekilde dinlendi. Hem `MainScreen` hem de `DetailScreen` aynı ViewModel'den beslendi.
+
+#### 5. Arayüz ve Favori Entegrasyonu (`core/ui/component` & `presentation`)
+* **`CityCard.kt`**: Şehir kartına kalpli favori ikonu eklendi.
+* **`MainScreen.kt` & `DetailScreen.kt`**: Favori durumları canlı olarak güncellenebilir ve her iki ekrandan da senkronize yönetilebilir hale getirildi. Cihaz döndürüldüğünde durum korundu.
