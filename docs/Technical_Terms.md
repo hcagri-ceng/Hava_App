@@ -86,3 +86,29 @@ Bu doküman, `Developing_Steps.md` rehberinde (CP1 ve CP2) geçen teknik terimle
 ### 24. Türetilmiş Durum (Derived State)
 > Mevcut ana durumdan (UiState) hesaplanarak elde edilen ikincil verilerdir (örneğin tüm şehirler arasından sadece favori işaretlenmiş olanların hesaplanması).
 
+---
+
+## 📕 Check Point 4 (CP4) Teknik Terimleri
+
+### 25. Asenkron Veri Akışı (Asynchronous Data Flow)
+> Kullanıcı arayüzünün (UI Thread) donmasını ve kilitlenmesini önlemek amacıyla veri yükleme, ağ istekleri veya veritabanı işlemlerinin arka plan iş parçacıklarında (Background Thread) yürütülmesidir.
+
+### 26. Suspend Fonksiyon
+> Kotlin Coroutines kütüphanesinde, çalıştırıldığı iş parçacığını (thread) kilitlenmeden askıya alabilen (suspend) ve arka plan işlemi bittiğinde kaldığı yerden devam eden özel fonksiyonlardır.
+
+### 27. AppResult & AppError
+> Veri çağrılarından dönen sonuçların başarı (`Success`) veya hata (`Error`) durumlarını tip güvenli (type-safe) ve temiz bir mimariyle sarmalayan sonuç modelidir.
+
+### 28. viewModelScope & launch
+> ViewModel yaşam döngüsüne bağlı coroutine başlatıcıdır. ViewModel yok edildiğinde arka planda devam eden veri isteklerini otomatik olarak iptal eder.
+
+### 29. LoadState / 4 Ekran Durumu (Loading, Content, Empty, Error)
+> Kullanıcıya uygulamanın o anki durumunu gösteren 4 temel arayüz halidir: Yükleniyor (`Loading`), İçerik Yüklendi (`Content`), Boş Sonuç (`Empty`) ve Hata/Yeniden Deneme (`Error`).
+
+### 30. CancellationException & İptal Yönetimi
+> Kullanıcı ekrandan çıktığında veya yeni bir işlem başlattığında önceki arka plan coroutine görevinin iptal edilmesidir. Bu iptal durumu bir hata/çökme olarak kullanıcıya yansıtılmamalıdır.
+
+### 31. Eşzamanlı Yinelenen İstek Engelleme (Request Guard / Job Control)
+> Kullanıcı "Tekrar Dene" veya yükleme butonuna üst üste hızlıca bastığında sunucuya aynı anda birden fazla paralel isteğin gönderilmesini engelleyen koruma mekanizmasıdır.
+
+

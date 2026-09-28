@@ -100,3 +100,38 @@
 #### 5. Arayüz ve Favori Entegrasyonu (`core/ui/component` & `presentation`)
 * **`CityCard.kt`**: Şehir kartına kalpli favori ikonu eklendi.
 * **`MainScreen.kt` & `DetailScreen.kt`**: Favori durumları canlı olarak güncellenebilir ve her iki ekrandan da senkronize yönetilebilir hale getirildi. Cihaz döndürüldüğünde durum korundu.
+
+
+## Check Point 4 (CP4)
+
+<h1> Amaç </h1> 
+    Asekron veri akışında yükleniyor , içerik , boş sonuç ve hata durumlarınının yönetilmesi , yeniden denemenin uygulanması. 
+<h1>İstenenler</h1>
+    1.Veri çağrısının inceleyin. suspend dönüş tipini belirleyin.Gecikme , dolu sonuç , boş sonuç ve hata senaryolarını hazırlayın. 
+    2.Yüklemeyi yönetin. ViewModel'de StateFlow<LoadState> sunun. init ve yeniden deneme için LoadData() fonksiyonunu kullanın. 
+    3.Sonuçları eşleştirin. viewModelScope , launch içinde önce Loading yayımlayın. Sonucu uygun duruma çevirin; iptali hata olarak sunmayın.
+    4. Arayüzü bağlayın. when ile dört görünümü oluşturun. "Tekrar Dene" yeni çağrı başlatılsın ; eşzamanlı yinelenen istekleri önleyin.
+
+<h1>Geliştirme Adımları CP4</h1>
+
+### CP4 Geliştirme Adımları & Yapılan İşlemler
+
+#### 1. Asenkron Sonuç Sarmalayıcısı & Hata Modeli (`core/common`)
+* **`AppResult.kt` & `AppError.kt`**: Asenkron veri çağrılarından dönen başarı (`AppResult.Success`) ve hata (`AppResult.Error`) durumlarını güvenli şekilde yöneten sarmalayıcı sınıflar yazıldı.
+
+#### 2. Sahte Veri Kaynağı ve Asenkron Çağrı (`feature/weather/data/remote`)
+* **`FakeWeatherRemoteDataSource.kt`**: `suspend fun getCities(): AppResult<List<CityUiModel>>` fonksiyonu tanımlandı.
+* **Senaryolar**: `delay(1200)` asenkron ağ gecikmesi, dolu sonuç, boş sonuç ve hata senaryoları simüle edildi.
+
+#### 3. ViewModel ve Asenkron Durum Yönetimi (`feature/weather/presentation`)
+* **`WeatherViewModel.kt`**: `init` bloğunda `loadData()` çağrıldı. `viewModelScope.launch` içinde istek başlamadan önce `Loading` durumu yayımlandı.
+* **İptal Yönetimi**: `CancellationException` catch edilerek re-throw edildi; coroutine iptalleri kullanıcıya hata olarak sunulmadı.
+* **Eşzamanlı İstek Engelleme (Request Guard)**: `fetchJob` kontrolü eklendi; hali hazırda çalışan bir istek varken kullanıcı "Tekrar Dene"ye bassa dahi üst üste paralel istek atılması engellendi (`if (fetchJob?.isActive == true) return`).
+
+#### 4. Arayüzün Dört Duruma Bağlanması (`core/ui/component` & `presentation`)
+* **Arayüz Bileşenleri**: `LoadingComponent`, `ErrorComponent` ve `EmptyComponent` bileşenleri oluşturuldu.
+* **`MainScreen.kt`**: `when` kontrolü ile 4 ekran durumu arayüze bağlandı:
+  1. **Yükleniyor (`Loading`)**: `LoadingComponent` gösterilir.
+  2. **Hata (`Error`)**: Hata mesajı ve **"Tekrar Dene 🔄"** butonu gösterilir.
+  3. **Boş Sonuç (`Empty`)**: Bilgilendirme ve **"Verileri Yenile 🔄"** butonu gösterilir.
+  4. **Dolu Sonuç (`Content`)**: Şehir listesi ve tıklanabilir kartlar listelenir.
