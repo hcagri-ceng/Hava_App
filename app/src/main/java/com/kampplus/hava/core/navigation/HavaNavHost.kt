@@ -46,6 +46,9 @@ fun HavaNavHost(
                 },
                 onNavigateToFavorites = {
                     navController.navigate(Destination.Favorites.route)
+                },
+                onRetry = {
+                    weatherViewModel.loadData()
                 }
             )
         }

@@ -10,3 +10,7 @@ sealed class Destination(val route: String) {
         fun createRoute(cityId: String): String = "detail/$cityId"
     }
 }
+// sealed classa bakılacak.
+class deneme : Destination(route = "Deneme"){
+
+}
